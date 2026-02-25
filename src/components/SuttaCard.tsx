@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import type { Sutta, Language } from "@/data/suttas";
 
 interface SuttaCardProps {
@@ -7,9 +8,12 @@ interface SuttaCardProps {
 }
 
 const SuttaCard = ({ sutta, language, index }: SuttaCardProps) => {
+  const navigate = useNavigate();
+
   return (
     <article
-      className="group rounded-lg border border-border bg-card p-6 transition-all duration-300 hover:border-primary/40 hover:shadow-lg animate-fade-in"
+      onClick={() => navigate(`/sutta/${sutta.id}`)}
+      className="group cursor-pointer rounded-lg border border-border bg-card p-6 transition-all duration-300 hover:border-primary/40 hover:shadow-lg animate-fade-in"
       style={{ animationDelay: `${index * 60}ms` }}
     >
       <div className="mb-3 flex items-center justify-between">
