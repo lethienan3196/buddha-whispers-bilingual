@@ -1,8 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-lotus.jpg";
 import LanguageToggle from "./LanguageToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { BookOpen } from "lucide-react";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   const { language } = useLanguage();
 
   return (
@@ -43,6 +46,13 @@ const HeroSection = () => {
             ? "Explore summaries of key suttas from the Pāli Canon — the oldest recorded teachings of the Buddha."
             : "Khám phá tóm tắt các bài kinh quan trọng từ Kinh tạng Pāli — những lời dạy lâu đời nhất được ghi chép của Đức Phật."}
         </p>
+        <button
+          onClick={() => navigate("/keywords")}
+          className="mt-6 inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-5 py-2.5 font-heading text-sm font-medium text-primary transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-md"
+        >
+          <BookOpen className="h-4 w-4" />
+          {language === "en" ? "Learn Key Terms" : "Học Thuật Ngữ"}
+        </button>
       </div>
     </header>
   );
