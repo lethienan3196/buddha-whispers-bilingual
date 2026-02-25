@@ -223,6 +223,23 @@ export const suttas: Sutta[] = [
       vi: "Mười hai nhân duyên",
     },
   },
+  {
+    id: "dn3",
+    paliTitle: "Ambaṭṭha Sutta",
+    collection: "Dīgha Nikāya",
+    title: {
+      en: "About Ambaṭṭha",
+      vi: "Kinh Am-ba-tha",
+    },
+    summary: {
+      en: "The Buddha challenges the idea that a person's worth is determined by birth or caste. True nobility comes from ethical behavior and mental development — wisdom and conduct (vijjā-caraṇa) — not from ancestry.",
+      vi: "Đức Phật thách thức quan niệm rằng giá trị con người được quyết định bởi dòng dõi hay giai cấp. Sự cao quý thật sự đến từ đạo đức và tu tập tâm linh — minh hạnh túc (vijjā-caraṇa) — chứ không phải từ tổ tiên.",
+    },
+    keyTeaching: {
+      en: "True nobility through wisdom & conduct",
+      vi: "Cao quý thật sự qua minh hạnh túc",
+    },
+  },
 ];
 
 export const collections = [
