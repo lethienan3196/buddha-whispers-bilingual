@@ -5,6 +5,13 @@ import { keywords } from "@/data/keywords";
 import { suttas } from "@/data/suttas";
 import LanguageToggle from "./LanguageToggle";
 import { ArrowLeft, Search, BookOpen, Lightbulb } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 
 const KeywordsView = () => {
   const navigate = useNavigate();
@@ -72,9 +79,7 @@ const KeywordsView = () => {
         {filtered.map((keyword, i) => (
           <button
             key={keyword.id}
-            onClick={() =>
-              setSelectedId(selectedId === keyword.id ? null : keyword.id)
-            }
+            onClick={() => setSelectedId(keyword.id)}
             className={`group rounded-lg border p-5 text-left transition-all animate-fade-in ${
               selectedId === keyword.id
                 ? "border-primary bg-primary/5 shadow-md"
@@ -108,66 +113,74 @@ const KeywordsView = () => {
         </p>
       )}
 
-      {/* Expanded detail panel */}
-      {selected && (
-        <div className="mt-8 rounded-xl border border-primary/30 bg-card p-6 shadow-lg animate-fade-in">
-          <div className="mb-4 flex items-center gap-3">
-            <span className="text-3xl">{selected.emoji}</span>
-            <div>
-              <h2 className="font-heading text-xl font-bold text-foreground">
-                {selected.term[language]}
-              </h2>
-              <p className="font-heading text-sm italic text-muted-foreground">
-                {selected.pali}
-              </p>
-            </div>
-          </div>
+      {/* Side panel */}
+      <Sheet open={!!selected} onOpenChange={(open) => !open && setSelectedId(null)}>
+        <SheetContent className="overflow-y-auto sm:max-w-md">
+          {selected && (
+            <>
+              <SheetHeader className="pb-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-4xl">{selected.emoji}</span>
+                  <div>
+                    <SheetTitle className="font-heading text-xl font-bold text-foreground">
+                      {selected.term[language]}
+                    </SheetTitle>
+                    <SheetDescription className="font-heading text-sm italic">
+                      {selected.pali}
+                    </SheetDescription>
+                  </div>
+                </div>
+              </SheetHeader>
 
-          {/* Definition */}
-          <div className="mb-5">
-            <h3 className="mb-1 flex items-center gap-2 font-heading text-sm font-semibold text-primary">
-              <BookOpen className="h-4 w-4" />
-              {language === "en" ? "Definition" : "Định Nghĩa"}
-            </h3>
-            <p className="font-body text-sm leading-relaxed text-foreground/85">
-              {selected.definition[language]}
-            </p>
-          </div>
+              <div className="space-y-6 pt-2">
+                {/* Definition */}
+                <div>
+                  <h3 className="mb-2 flex items-center gap-2 font-heading text-sm font-semibold text-primary">
+                    <BookOpen className="h-4 w-4" />
+                    {language === "en" ? "Definition" : "Định Nghĩa"}
+                  </h3>
+                  <p className="font-body text-sm leading-relaxed text-foreground/85">
+                    {selected.definition[language]}
+                  </p>
+                </div>
 
-          {/* Analogy */}
-          <div className="mb-5 rounded-lg bg-accent/30 p-4">
-            <h3 className="mb-1 flex items-center gap-2 font-heading text-sm font-semibold text-primary">
-              <Lightbulb className="h-4 w-4" />
-              {language === "en" ? "Simple Analogy" : "Ví Dụ Đơn Giản"}
-            </h3>
-            <p className="font-body text-sm italic leading-relaxed text-foreground/80">
-              {selected.analogy[language]}
-            </p>
-          </div>
+                {/* Analogy */}
+                <div className="rounded-lg bg-accent/30 p-4">
+                  <h3 className="mb-2 flex items-center gap-2 font-heading text-sm font-semibold text-primary">
+                    <Lightbulb className="h-4 w-4" />
+                    {language === "en" ? "Simple Analogy" : "Ví Dụ Đơn Giản"}
+                  </h3>
+                  <p className="font-body text-sm italic leading-relaxed text-foreground/80">
+                    {selected.analogy[language]}
+                  </p>
+                </div>
 
-          {/* Related suttas */}
-          <div>
-            <h3 className="mb-2 font-heading text-sm font-semibold text-muted-foreground">
-              {language === "en" ? "Found in" : "Xuất hiện trong"}
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {selected.relatedSuttaIds.map((sId) => {
-                const s = suttas.find((st) => st.id === sId);
-                if (!s) return null;
-                return (
-                  <button
-                    key={sId}
-                    onClick={() => navigate(`/sutta/${sId}`)}
-                    className="rounded-full border border-border bg-muted px-3 py-1 font-body text-xs font-medium text-foreground transition-all hover:border-primary hover:text-primary"
-                  >
-                    {s.paliTitle}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
+                {/* Related suttas */}
+                <div>
+                  <h3 className="mb-3 font-heading text-sm font-semibold text-muted-foreground">
+                    {language === "en" ? "Found in" : "Xuất hiện trong"}
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selected.relatedSuttaIds.map((sId) => {
+                      const s = suttas.find((st) => st.id === sId);
+                      if (!s) return null;
+                      return (
+                        <button
+                          key={sId}
+                          onClick={() => navigate(`/sutta/${sId}`)}
+                          className="rounded-full border border-border bg-muted px-3 py-1 font-body text-xs font-medium text-foreground transition-all hover:border-primary hover:text-primary"
+                        >
+                          {s.paliTitle}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
 
       {/* Footer */}
       <footer className="mt-16 border-t border-border pt-8 text-center">
