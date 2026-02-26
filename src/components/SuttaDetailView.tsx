@@ -3,7 +3,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { suttas } from "@/data/suttas";
 import { getSuttaDetail } from "@/data/suttaDetails";
 import LanguageToggle from "./LanguageToggle";
-import { ArrowLeft, BookOpen } from "lucide-react";
+import { ArrowLeft, BookOpen, ExternalLink } from "lucide-react";
 
 interface Props {
   suttaId: string;
@@ -89,6 +89,20 @@ const SuttaDetailView = ({ suttaId }: Props) => {
           </p>
         </div>
       )}
+
+      {/* Read Full Sutta */}
+      <div className="mt-10 flex justify-center">
+        <a
+          href={`https://suttacentral.net/${suttaId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-full border border-primary bg-primary/10 px-6 py-3 font-heading text-sm font-semibold text-primary transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-lg"
+        >
+          <BookOpen className="h-4 w-4" />
+          {language === "en" ? "Read Full Sutta" : "Đọc Toàn Bộ Kinh"}
+          <ExternalLink className="h-3.5 w-3.5" />
+        </a>
+      </div>
 
       {/* Footer */}
       <footer className="mt-16 border-t border-border pt-8 text-center">
