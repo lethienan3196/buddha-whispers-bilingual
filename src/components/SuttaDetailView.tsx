@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { suttas } from "@/data/suttas";
 import { getSuttaDetail } from "@/data/suttaDetails";
 import LanguageToggle from "./LanguageToggle";
-import { ArrowLeft, BookOpen, ExternalLink } from "lucide-react";
+import { ArrowLeft, BookOpen, ExternalLink, X } from "lucide-react";
 
 interface Props {
   suttaId: string;
@@ -12,6 +13,7 @@ interface Props {
 const SuttaDetailView = ({ suttaId }: Props) => {
   const navigate = useNavigate();
   const { language } = useLanguage();
+  const [showFullSutta, setShowFullSutta] = useState(false);
   const sutta = suttas.find((s) => s.id === suttaId);
   const detail = getSuttaDetail(suttaId);
 
@@ -90,18 +92,70 @@ const SuttaDetailView = ({ suttaId }: Props) => {
         </div>
       )}
 
-      {/* Read Full Sutta */}
-      <div className="mt-10 flex justify-center">
-        <a
-          href={`https://suttacentral.net/${suttaId}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-full border border-primary bg-primary/10 px-6 py-3 font-heading text-sm font-semibold text-primary transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-lg"
+      {/* Read Full Sutta – Flip Card */}
+      <div className="mt-10" style={{ perspective: "1200px" }}>
+        <div
+          className="relative w-full transition-transform duration-700"
+          style={{
+            transformStyle: "preserve-3d",
+            transform: showFullSutta ? "rotateY(180deg)" : "rotateY(0deg)",
+          }}
         >
-          <BookOpen className="h-4 w-4" />
-          {language === "en" ? "Read Full Sutta" : "Đọc Toàn Bộ Kinh"}
-          <ExternalLink className="h-3.5 w-3.5" />
-        </a>
+          {/* Front face – button */}
+          <div
+            className="flex justify-center"
+            style={{ backfaceVisibility: "hidden" }}
+          >
+            <button
+              onClick={() => setShowFullSutta(true)}
+              className="inline-flex items-center gap-2 rounded-full border border-primary bg-primary/10 px-6 py-3 font-heading text-sm font-semibold text-primary transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-lg"
+            >
+              <BookOpen className="h-4 w-4" />
+              {language === "en" ? "Read Full Sutta" : "Đọc Toàn Bộ Kinh"}
+              <ExternalLink className="h-3.5 w-3.5" />
+            </button>
+          </div>
+
+          {/* Back face – iframe */}
+          {showFullSutta && (
+            <div
+              className="absolute inset-0 rounded-lg border border-border bg-card"
+              style={{
+                backfaceVisibility: "hidden",
+                transform: "rotateY(180deg)",
+                position: "relative",
+              }}
+            >
+              <div className="flex items-center justify-between border-b border-border px-4 py-3">
+                <span className="font-heading text-sm font-semibold text-foreground">
+                  SuttaCentral — {suttaId.toUpperCase()}
+                </span>
+                <div className="flex items-center gap-2">
+                  <a
+                    href={`https://suttacentral.net/${suttaId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-primary hover:underline"
+                  >
+                    {language === "en" ? "Open in new tab" : "Mở tab mới"}
+                    <ExternalLink className="ml-1 inline h-3 w-3" />
+                  </a>
+                  <button
+                    onClick={() => setShowFullSutta(false)}
+                    className="rounded-full p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+              <iframe
+                src={`https://suttacentral.net/${suttaId}`}
+                className="h-[70vh] w-full rounded-b-lg"
+                title="Full Sutta"
+              />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Footer */}
