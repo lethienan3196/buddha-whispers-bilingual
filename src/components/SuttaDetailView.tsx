@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { suttas } from "@/data/suttas";
 import { getSuttaDetail } from "@/data/suttaDetails";
 import LanguageToggle from "./LanguageToggle";
-import { ArrowLeft, BookOpen, ExternalLink } from "lucide-react";
+import { ArrowLeft, BookOpen, ChevronUp } from "lucide-react";
 
 interface Props {
   suttaId: string;
@@ -12,6 +13,7 @@ interface Props {
 const SuttaDetailView = ({ suttaId }: Props) => {
   const navigate = useNavigate();
   const { language } = useLanguage();
+  const [showFullText, setShowFullText] = useState(false);
   const sutta = suttas.find((s) => s.id === suttaId);
   const detail = getSuttaDetail(suttaId);
 
@@ -91,17 +93,38 @@ const SuttaDetailView = ({ suttaId }: Props) => {
       )}
 
       {/* Read Full Sutta */}
-      <div className="mt-10 flex justify-center">
-        <a
-          href={`https://suttacentral.net/${suttaId}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-full border border-primary bg-primary/10 px-6 py-3 font-heading text-sm font-semibold text-primary transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-lg"
-        >
-          <BookOpen className="h-4 w-4" />
-          {language === "en" ? "Read Full Sutta" : "Đọc Toàn Bộ Kinh"}
-          <ExternalLink className="h-3.5 w-3.5" />
-        </a>
+      <div className="mt-10">
+        <div className="flex justify-center">
+          <button
+            onClick={() => setShowFullText(!showFullText)}
+            className="inline-flex items-center gap-2 rounded-full border border-primary bg-primary/10 px-6 py-3 font-heading text-sm font-semibold text-primary transition-all hover:bg-primary hover:text-primary-foreground hover:shadow-lg"
+          >
+            <BookOpen className="h-4 w-4" />
+            {showFullText
+              ? (language === "en" ? "Hide Full Text" : "Ẩn Toàn Văn")
+              : (language === "en" ? "Read Full Sutta" : "Đọc Toàn Bộ Kinh")}
+            <ChevronUp className={`h-4 w-4 transition-transform duration-300 ${showFullText ? "" : "rotate-180"}`} />
+          </button>
+        </div>
+
+        {showFullText && detail?.fullText && (
+          <div className="mt-6 rounded-lg border border-border bg-card p-6 animate-fade-in">
+            <div className="font-body text-sm leading-relaxed text-foreground/85 whitespace-pre-line">
+              {renderMarkdownLite(detail.fullText[language])}
+            </div>
+          </div>
+        )}
+
+        {showFullText && !detail?.fullText && (
+          <div className="mt-6 rounded-lg border border-dashed border-border bg-muted/30 p-10 text-center animate-fade-in">
+            <BookOpen className="mx-auto mb-3 h-8 w-8 text-muted-foreground/50" />
+            <p className="font-body text-sm text-muted-foreground">
+              {language === "en"
+                ? "Full text coming soon."
+                : "Toàn văn sẽ sớm được cập nhật."}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Footer */}
